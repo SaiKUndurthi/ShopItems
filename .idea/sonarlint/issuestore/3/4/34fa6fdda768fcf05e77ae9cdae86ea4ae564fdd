@@ -1,0 +1,67 @@
+
+a
+java:S1192i"KDefine a constant instead of duplicating this literal "09/30/2019" 4 times.(åòŞş
+a
+java:S1192p"KDefine a constant instead of duplicating this literal "02/30/2019" 4 times.(Û«¾¥
+g
+java:S1192Ù"KDefine a constant instead of duplicating this literal "!@#$Search" 3 times.(šˆËÃÿÿÿÿÿ
+?
+java:S1148Ò"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+*
+java:S1700¡"Rename field "cash"(êœÏú
+?
+java:S1604¼"(Make this anonymous inner class a lambda(˜Äß†
+D
+java:S1604Ã"(Make this anonymous inner class a lambda(¹€»ñúÿÿÿÿ
+?
+java:S1604Ê"(Make this anonymous inner class a lambda(©õ”Ô
+Y
+java:S2259Ô"BA "NullPointerException" could be thrown; "date" is nullable here.(Ëãè÷
+f
+java:S1104@"PMake name a static final constant or non-public and provide accessors if needed.( şÍ¾
+o
+java:S1104A"YMake imageResource a static final constant or non-public and provide accessors if needed.(µƒ¯
+r
+java:S1104B"WMake description a static final constant or non-public and provide accessors if needed.(¹ÿ†ğÿÿÿÿÿ
+k
+java:S1104C"PMake cost a static final constant or non-public and provide accessors if needed.(Ş £ûÿÿÿÿ
+p
+java:S1104D"UMake purchased a static final constant or non-public and provide accessors if needed.(é ôÚùÿÿÿÿ
+f
+java:S1104E"PMake date a static final constant or non-public and provide accessors if needed.(áÊ÷
+k
+java:S1104|"PMake m_id a static final constant or non-public and provide accessors if needed.(Äé®Áùÿÿÿÿ
+m
+java:S1104}"RMake m_view a static final constant or non-public and provide accessors if needed.(ëè×¡ÿÿÿÿÿ
+t
+java:S1104¶"XMake customDialog a static final constant or non-public and provide accessors if needed.(ç‡¯Ñüÿÿÿÿ
+j
+java:S1104Ù"NMake id a static final constant or non-public and provide accessors if needed.(†íª¦ûÿÿÿÿ
+i
+java:S1104 "RMake amount a static final constant or non-public and provide accessors if needed.(¸®“Ø
+J
+java:S1128""4Remove this unused import 'java.lang.reflect.Array'.(‡¡É˜
+P
+java:S1128"5Remove this unused import 'android.view.MotionEvent'.(˜šËŞúÿÿÿÿ
+S
+java:S1197h"8Move the array designator from the variable to the type.(‘ÅŠ¨ÿÿÿÿÿ
+i	java:S116|"ORename this field "m_id" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Äé®Áùÿÿÿÿ
+k	java:S116}"QRename this field "m_view" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ëè×¡ÿÿÿÿÿ
+i	java:S100¦"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(öŞÏıúÿÿÿÿ
+i	java:S100¸"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ÿ¡Ü÷ıÿÿÿÿ
+i	java:S100™"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(öÉ…Îùÿÿÿÿ
+8
+java:S1116§"Remove this empty statement.(ôŸìúÿÿÿÿ
+u
+java:S1171»"YMove the contents of this initializer to a standard constructor or to field initializers.(ÒÌâ–øÿÿÿÿ
+:
+java:S1659Í"#Declare "date1" on a separate line.(è¢°¢
+J
+java:S1068/"4Remove this unused "mMessageTextView" private field.(ÿ°âµ
+R	java:S125¼"<This block of commented-out lines of code should be removed.(óÛ¿«
+W	java:S125Š"<This block of commented-out lines of code should be removed.(ıÕ–½ıÿÿÿÿ
+R	java:S125•"<This block of commented-out lines of code should be removed.(€ˆØò
+W	java:S125—"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ
+W	java:S125"<This block of commented-out lines of code should be removed.(ıÕ–½ıÿÿÿÿ
+N
+java:S1144¸"2Remove this unused private "InitShopItems" method.(Ÿ¡Ü÷ıÿÿÿÿ
