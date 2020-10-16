@@ -2,76 +2,18 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.ColumnInfo;
-import androidx.room.Dao;
-import androidx.room.Database;
-import androidx.room.Delete;
-import androidx.room.Entity;
-import androidx.room.Insert;
-import androidx.room.PrimaryKey;
-import androidx.room.Query;
 import androidx.room.Room;
-import androidx.room.RoomDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(tableName = "login")
-class Login
-{
-    @PrimaryKey
-    @NonNull
-    public String email;
-    @ColumnInfo
-    public String firstname;
-    @ColumnInfo
-    public String lastname;
-    @ColumnInfo
-    public String password;
-}
-@Dao
-interface LoginDao
-{
-//    @Query("SELECT * FROM user")
-//    List<User> getAll();
-//
-//    @Query("SELECT * FROM user WHERE uid IN (:userIds)")
-//    List<User> loadAllByIds(int[] userIds);
-//
-//    @Query("SELECT * FROM user WHERE first_name LIKE :first AND " +
-//            "last_name LIKE :last LIMIT 1")
-//    User findByName(String first, String last);
-//
-//    @Insert
-//    void insertAll(User... users);
-//
-//    @Delete
-//    void delete(User user);
-    @Query("SELECT * from login")
-    ArrayList<Login> getAllUsers();
-
-    @Query("SELECT * FROM login WHERE email LIKE :n LIMIT 1")
-    Login findByName(String n);
-
-    @Insert
-    void insertUser(Login user);
-
-    //@Query("SELECT * FROM login WHERE ")
-}
-
-@Database(entities = {LoginActivity.class}, version = 1)
-abstract class AppDatabase extends RoomDatabase {
-    public abstract LoginDao loginDao();
-}
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -79,11 +21,12 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmail;
     private EditText mPassword;
     private Button mLoginBtn;
+    private Button mRegister;
     private String userEmail;
     private String userPassword;
 
-    AppDatabase db = Room.databaseBuilder(getApplicationContext(),
-            AppDatabase.class, "shopping-app").build();
+    public static AppDatabase db;
+    private List<Login> tempList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +36,18 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.edt_email);
         mPassword = findViewById(R.id.edt_password);
         mLoginBtn = findViewById(R.id.btn_login);
+        mRegister = findViewById(R.id.btn_signup);
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "shopping-app").build();
+
+        mRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,40 +55,113 @@ public class LoginActivity extends AppCompatActivity {
                 // validate
                 // shared pref
                 // scrolling activity
-                if(attemptLogin()) {
-                    Intent intent = new Intent(LoginActivity.this, ScrollingActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else if(!TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userPassword) && !myApplication.doesUserEmailExist(userEmail)) {
-                    myApplication.setUserInfo(userEmail, userPassword);
-                } else {
-                    // display error
-                    Toast.makeText(LoginActivity.this,
-                            "Please check your login credentials.", Toast.LENGTH_LONG).show();
-                }
+                userEmail = mEmail.getText().toString();
+                userPassword = mPassword.getText().toString();
+                final Login login = new Login(null,null,userEmail,userPassword);
+
+                attemptLogin(login) ;
+
+
             }
         });
+
+//        mLoginBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // validate
+//                // shared pref
+//                // scrolling activity
+//                if(attemptLogin()) {
+//                    Intent intent = new Intent(LoginActivity.this, ScrollingActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                } else if(!TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userPassword) && !myApplication.doesUserEmailExist(userEmail)) {
+//                    myApplication.setUserInfo(userEmail, userPassword);
+//                } else {
+//                    // display error
+//                    Toast.makeText(LoginActivity.this,
+//                            "Please check your login credentials.", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
     }
 
-    private boolean attemptLogin() {
+    private void attemptLogin(final Login login) {
         mEmail.setError(null);
         mPassword.setError(null);
 
-        userEmail = mEmail.getText().toString();
-        userPassword = mPassword.getText().toString();
+//        userEmail = mEmail.getText().toString();
+//        userPassword = mPassword.getText().toString();
 
 
-        if(TextUtils.isEmpty(userEmail) || TextUtils.isEmpty(userPassword)) {
+        Thread save = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                tempList = db.loginDao().getAllUsers();
+//                Login found = db.loginDao().findByName(login.getEmail());
+//                if(found == null && !TextUtils.isEmpty(login.getEmail()) && !TextUtils.isEmpty(login.getPassword()) && !checkLoginInfo(login.getEmail(),login.getPassword())) {
+//                    Thread save = new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            db.loginDao().insertUser(login);
+//
+//                            Intent intent = new Intent(LoginActivity.this, ScrollingActivity.class);
+//                            startActivity(intent);
+//                            Toast.makeText(LoginActivity.this,
+//                                    "New User registered", Toast.LENGTH_LONG).show();
+//                            finish();
+//                        }
+//                    });
+//                    save.start();
+//
+//                    //CODE WITHOUT DB
+//                    //myApplication.setUserInfo(userEmail, userPassword);
+////                }else if( TextUtils.isEmpty(found.email) || TextUtils.isEmpty(found.password) ){
+////                    Toast.makeText(LoginActivity.this,
+////                            "Credentials can't be empty.", Toast.LENGTH_LONG).show();
+////                }
+//                }else
+                if(checkLoginInfo(tempList,login.getEmail(),login.getPassword())){
+                    Intent intent = new Intent(LoginActivity.this, ScrollingActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else {
+                    // display error
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(LoginActivity.this,
+                                    "Please check your login credentials.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+
+            }
+        });
+        save.start();
+
+
+
+// CODE WITHOUT DATABASE
+//        if(TextUtils.isEmpty(userEmail) || TextUtils.isEmpty(userPassword)) {
+//            return false;
+//        } else {
+//            return checkLoginInfo(userEmail, userPassword);
+//        }
+    }
+
+    private boolean checkLoginInfo(List<Login>list, String email, String password) {
+
+            if(list.isEmpty()) return false;
+            int temp =list.size();
+
+            for(int i = 0; i < list.size(); i++){
+                if(email.equals(list.get(i).getEmail())){
+                    list.get(i);
+                    return password.equals(list.get(i).getPassword());
+                }
+            }
             return false;
-        } else {
-            return checkLoginInfo(userEmail, userPassword);
         }
-    }
-
-    private boolean checkLoginInfo(String email, String password) {
-
-        String userPassword = myApplication.getUserInfo(email);
-
-        return password.equals(userPassword);
-    }
 }

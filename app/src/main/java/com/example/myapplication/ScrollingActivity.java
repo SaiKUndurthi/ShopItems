@@ -88,7 +88,10 @@ public class ScrollingActivity extends AppCompatActivity
 
                     setInput(getInput() - data.get(m_id).getCost());
                     transactionHistory.add(data.get(m_id).getName() +" purchased at $" +((Integer) data.get(m_id).getCost()).toString());
-                            data.remove(m_id);
+                    data.get(m_id).setCount(data.get(m_id).getCount()-1);
+                    if(data.get(m_id).getCount()==0) {
+                        data.remove(m_id);
+                    }
                             itemsAdapter.notifyDataSetChanged();
                     dismiss();
                 }
@@ -129,11 +132,19 @@ public class ScrollingActivity extends AppCompatActivity
         public int cost;
         public boolean purchased;
         public String date;
+        public int count;
         public int id;
 
 
         public String getName() {
             return name;
+        }
+
+        public int getCount() {
+            return count;
+        }
+        public void setCount(int count){
+            this.count = count;
         }
 
         public int getId(){
@@ -163,7 +174,7 @@ public class ScrollingActivity extends AppCompatActivity
             this.description = description;
         }
 
-        public ShopData(int layout,String nm, int res, String desc, int cst, String date)
+        public ShopData(int layout,String nm, int res, String desc, int cst, String date, int count)
         {
             this.id = layout;
             name  = nm;
@@ -172,6 +183,7 @@ public class ScrollingActivity extends AppCompatActivity
             cost = cst;
             purchased = false;
             this.date = date;
+            this.count = count;
         }
 
         public static Comparator<ShopData> ShpNameComparator = new Comparator<ShopData>() {
@@ -259,6 +271,9 @@ public class ScrollingActivity extends AppCompatActivity
 
             TextView itemDate = (TextView) itemView.findViewById(R.id.message);
             itemDate.setText(currentShopdata.getDate());
+
+            TextView itemCount = (TextView) itemView.findViewById(R.id.item_count);
+            itemCount.setText(((Integer)(currentShopdata.getCount())).toString());
 
             itemCostButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -364,22 +379,22 @@ public class ScrollingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
 
-        data.add(new ShopData(0,"Bone", R.drawable.bone, "Good chew toy.", 1, "09/30/2019"));
-        data.add(new ShopData(1,"Carrot", R.drawable.carrot, "Good chew.", 1,"08/30/2019"));
-        data.add(new ShopData(2,"Dog", R.drawable.dog, "Chews toy.", 2,"08/20/2019"));
-        data.add(new ShopData(3,"Flame", R.drawable.flame, "It burns.", 1,"07/30/2029"));
-        data.add(new ShopData(4,"Grapes", R.drawable.grapes, "Your eat them.", 1,"09/30/2020"));
-        data.add(new ShopData(5,"House", R.drawable.house, "As opposed to home.", 100,"09/15/2019"));
-        data.add(new ShopData(6,"Lamp", R.drawable.lamp, "It lights.", 2,"09/30/2021"));
-        data.add(new ShopData(7,"Mouse", R.drawable.mouse, "Not a rat.", 1,"02/30/2019"));
-        data.add(new ShopData(8,"Nail", R.drawable.nail, "Hammer required.", 1,"12/30/2019"));
-        data.add(new ShopData(9,"Penguin", R.drawable.penguin, "Find Batman.", 10,"09/09/2019"));
-        data.add(new ShopData(10,"Rocks", R.drawable.rocks, "Rolls.", 1,"09/30/2019"));
-        data.add(new ShopData(11,"Star", R.drawable.star, "Like the sun but farther away.", 25,"01/30/2019"));
-        data.add(new ShopData(12,"Toad", R.drawable.toad, "Like a frog.", 1,"02/30/2019"));
-        data.add(new ShopData(13,"Van", R.drawable.van, "Has four wheels.", 10,"03/30/2019"));
-        data.add(new ShopData(14,"Wheat", R.drawable.wheat, "Some breads have it.", 1,"04/30/2019"));
-        data.add(new ShopData(15,"Yak", R.drawable.yak, "Yakity Yak Yak.", 15,"05/30/2019"));
+        data.add(new ShopData(0,"Bone", R.drawable.bone, "Good chew toy.", 1, "09/30/2019",3));
+        data.add(new ShopData(1,"Carrot", R.drawable.carrot, "Good chew.", 1,"08/30/2019",3));
+        data.add(new ShopData(2,"Dog", R.drawable.dog, "Chews toy.", 2,"08/20/2019",3));
+        data.add(new ShopData(3,"Flame", R.drawable.flame, "It burns.", 1,"07/30/2029",3));
+        data.add(new ShopData(4,"Grapes", R.drawable.grapes, "Your eat them.", 1,"09/30/2020",3));
+        data.add(new ShopData(5,"House", R.drawable.house, "As opposed to home.", 100,"09/15/2019",3));
+        data.add(new ShopData(6,"Lamp", R.drawable.lamp, "It lights.", 2,"09/30/2021",3));
+        data.add(new ShopData(7,"Mouse", R.drawable.mouse, "Not a rat.", 1,"02/30/2019",3));
+        data.add(new ShopData(8,"Nail", R.drawable.nail, "Hammer required.", 1,"12/30/2019",3));
+        data.add(new ShopData(9,"Penguin", R.drawable.penguin, "Find Batman.", 10,"09/09/2019",3));
+        data.add(new ShopData(10,"Rocks", R.drawable.rocks, "Rolls.", 1,"09/30/2019",3));
+        data.add(new ShopData(11,"Star", R.drawable.star, "Like the sun but farther away.", 25,"01/30/2019",3));
+        data.add(new ShopData(12,"Toad", R.drawable.toad, "Like a frog.", 1,"02/30/2019",3));
+        data.add(new ShopData(13,"Van", R.drawable.van, "Has four wheels.", 10,"03/30/2019",3));
+        data.add(new ShopData(14,"Wheat", R.drawable.wheat, "Some breads have it.", 1,"04/30/2019",3));
+        data.add(new ShopData(15,"Yak", R.drawable.yak, "Yakity Yak Yak.", 15,"05/30/2019",3));
 
         itemsAdapter = new ShopItemsApdapter(this, data);
         itemListView = (ListView) findViewById(R.id.lv_items);
