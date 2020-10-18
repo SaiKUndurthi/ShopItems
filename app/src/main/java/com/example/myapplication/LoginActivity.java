@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,8 +12,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import com.example.myapplication.shopping_service.ShoppingService;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -24,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button mRegister;
     private String userEmail;
     private String userPassword;
+    Retrofit retrofit;
 
     public static AppDatabase db;
     private List<Login> tempList;
@@ -58,6 +68,30 @@ public class LoginActivity extends AppCompatActivity {
                 userEmail = mEmail.getText().toString();
                 userPassword = mPassword.getText().toString();
                 final Login login = new Login(null,null,userEmail,userPassword);
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(ShoppingService.BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
+                        .build();
+
+                //creating the api interface
+                ShoppingService api = retrofit.create(ShoppingService.class);
+                Call<String> call = api.sendLoginLogs(login);
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String apiResponse = response.body();
+                        if (response.code() == 200) {
+                            Log.d("API Result:", "done");
+                        } else {
+                            Log.d("API Result:", "Error:" + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("API Result:", "Error:" + t.getMessage());
+                    }
+                });
 
                 attemptLogin(login) ;
 

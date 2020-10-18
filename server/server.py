@@ -36,6 +36,34 @@ def get_list():
     print("list")
     return jsonify({'list': shoplist})
 
+@app.route('/register', methods=['POST'])
+def post_register():
+    print("user details")
+
+    if not request.json:
+        abort(400)
+
+    if 'email' in request.json:
+        print("User details--------> Frist name: " + request.json.get('firstname', '?') + " Last name: "+request.json.get('lastname', '?')+" @Email: "+ request.json.get('email','?'))
+    else:
+        print("?")
+
+    return jsonify({'user': 0})
+
+@app.route('/login', methods=['POST'])
+def post_login():
+    print("user details")
+
+    if not request.json:
+        abort(400)
+
+    if 'email' in request.json:
+        print("Login User details--------> "+" @Email: "+ request.json.get('email','?'))
+    else:
+        print("?")
+
+    return jsonify({'user': 0})
+
 @app.route('/buy', methods=['POST'])
 def post_buy():
     print("buy")
@@ -44,7 +72,7 @@ def post_buy():
         abort(400)
 
     if 'name' in request.json:
-        print("buy: " + request.json.get('name', '?'))
+        print("Bought: " + request.json.get('name', '?') +" @ $"+ str(request.json.get('cost','?')))
     else:
         print("?")
 

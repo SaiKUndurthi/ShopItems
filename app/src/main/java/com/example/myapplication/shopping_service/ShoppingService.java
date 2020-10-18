@@ -19,10 +19,13 @@ public interface ShoppingService {
     @GET("/list")
     Call<JsonObject> getItems();
 
+    @POST("/register")
+    Call<String> sendRegisterinLogs(@Body Login loginRequest);
+
     @POST("/login")
     Call<String> sendLoginLogs(@Body Login loginRequest);
 
-    @POST("/purchase")
+    @POST("/buy")
     Call<String> sendPurchaseRequest(@Body ScrollingActivity.ShopData purchaseRequest);
 
 }

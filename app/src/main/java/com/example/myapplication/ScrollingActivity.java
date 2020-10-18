@@ -66,6 +66,7 @@ public class ScrollingActivity extends AppCompatActivity
     private ListView itemListView;
     private final ArrayList<ShopData> data = new ArrayList<>();
     private ArrayList<String> transactionHistory = new ArrayList<>();
+    static Retrofit retrofit;
 
     public int getInput() {
         return input;
@@ -106,7 +107,26 @@ public class ScrollingActivity extends AppCompatActivity
                     if(data.get(m_id).getCount()==0) {
                         data.remove(m_id);
                     }
-                            itemsAdapter.notifyDataSetChanged();
+                    itemsAdapter.notifyDataSetChanged();
+                    ShoppingService api = retrofit.create(ShoppingService.class);
+                    Call<String> call = api.sendPurchaseRequest(data.get(m_id));
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            String apiResponse = response.body();
+                            if (response.code() == 200) {
+                                Log.d("API Result:", "done");
+                            } else {
+                                Log.d("API Result:", "Error:" + response.message());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Log.d("API Result:", "Error:" + t.getMessage());
+                        }
+                    });
+
                     dismiss();
                 }
             });
@@ -431,7 +451,7 @@ public class ScrollingActivity extends AppCompatActivity
         toolBarLayout.setTitle(getTitle());
         try {
             //Creating a retrofit object
-            Retrofit retrofit = new Retrofit.Builder()
+             retrofit = new Retrofit.Builder()
                     .baseUrl(ShoppingService.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
                     .build();
