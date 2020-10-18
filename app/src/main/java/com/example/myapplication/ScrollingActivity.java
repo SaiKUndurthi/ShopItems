@@ -7,9 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.myapplication.shopping_service.ShoppingService;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,25 +33,35 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ScrollingActivity extends AppCompatActivity
 {
     private int input = 4500;
     private ShopItemsApdapter itemsAdapter;
-    private ArrayList<ShopData> itemsDisplayedList;
     private TextView mMessageTextView;
     private ListView itemListView;
     private final ArrayList<ShopData> data = new ArrayList<>();
@@ -415,8 +429,59 @@ public class ScrollingActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         toolBarLayout.setTitle(getTitle());
-        //itemListView = findViewById(R.id.lv_items);
-        itemsDisplayedList = new ArrayList<>();
+        try {
+            //Creating a retrofit object
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ShoppingService.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
+                    .build();
+
+            //creating the api interface
+            ShoppingService api = retrofit.create(ShoppingService.class);
+
+            Call<JsonObject> call = api.getItems();
+            Log.i("autolog", "Call<List<ShopData>> call = call.getUserData();");
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.code() == 200) {
+                        Log.d("API Result:", "done");
+                        //JSONObject reader = new JSONObject(response);
+                        JsonObject reader = response.body();
+                        JsonArray lst = reader.getAsJsonArray("list");
+                        ThreadLocalRandom random = ThreadLocalRandom.current();
+                        int rand;
+                        for (int i = 0; i < lst.size(); i++) {
+                            JsonObject obj = lst.get(i).getAsJsonObject();
+                            String name = obj.get("name").toString().replaceAll("\"", "");
+                            String image = obj.get("image").toString().replaceAll("\"", "");
+                            String desc = obj.get("description").toString().replaceAll("\"", "");
+                            int cost = Integer.valueOf(String.valueOf(obj.get("cost")));
+                            String date = obj.get("date").toString().replaceAll("\"", "");
+                            rand = random.nextInt(16, 100);
+
+                            int ir = 0;
+                            try {
+                                Field idField = R.drawable.class.getDeclaredField(image);
+                                ir = idField.getInt(idField);
+                            } catch (Exception e) {
+                            }
+                            data.add(new ShopData(rand, name, ir, desc, cost, date, 3));
+
+                        }
+                        itemsAdapter.notifyDataSetChanged();
+                        }else {
+                        Log.d("API Result:", "Error:" + response.message());
+                        Toast.makeText(ScrollingActivity.this, "Error(Flask Server)!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.d("API Result:", "Error:" + t.getMessage());
+                }
+            });
+        }catch (Exception e) {Log.i("autolog", "Exception");}
 
         handleIntent(getIntent());
 

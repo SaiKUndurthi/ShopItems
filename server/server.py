@@ -19,16 +19,18 @@ shoplist = [
 		'name': 'Jellyfish',
 		'image': 'jellyfish',
 		'description': "It stings",
+        'date': "07/30/2029",
 		'cost': 1
 	},
 	{
 		'name': 'Kitten',
 		'image': 'kitten',
 		'description': "It purrs",
+        'date': "07/30/2026",
 		'cost': 1
 	}
 ]
-	
+
 @app.route('/list', methods=['GET'])
 def get_list():
     print("list")
@@ -48,4 +50,4 @@ def post_buy():
 
     return jsonify({'spend': 0})
 
-app.run(port='5005',debug=True)
+app.run(host= '10.0.0.71',port='5005',debug=True)
